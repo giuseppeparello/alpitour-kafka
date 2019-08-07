@@ -1,0 +1,59 @@
+<configuration scan="true" scanPeriod="20 seconds">
+    <!--<statusListener class="ch.qos.logback.core.status.NopStatusListener" />-->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener" />
+	<!-- external inclusion -->
+	<include scope="local" optional="true" file="/home/sviluppo/alpitour/.config/logging.xml"/>
+	<include resource="logging-extend.xml" />
+	
+	
+	<!-- DEFAULTS PROPERTIES-->
+	<timestamp key="logFileTimestamp" datePattern="yyyy_MM_dd_HHmm" />
+	<property name="log.pattern"
+		value=" %d{dd/MM/yyyy HH:mm:ss.SSS} - %-5level [%thread] [%class{30}:%method:%line] %msg%n" />
+
+
+
+	<property name="log.rollingFile.name"
+		value="application_%i.log.gz" />
+
+
+    <property name="logFileNameProperty"
+              value="${log.file.name}" scope="context"/>
+
+	
+	<property name="log.rollingFile.maxFileSize"
+		value="1000KB" />
+	<!-- <property name="log.rollingFile.name"
+		value="${log.file.name:-application}_%d{yyyy_MM_dd}.log.gz" /> -->
+	<!-- APPENDERS -->
+	<appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder  class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+			<pattern>%d{dd/MM/yyyy HH:mm:ss.SSS} - %highlight(%-5level) %green([%thread]) %blue([%class{30}:%method:%line]) %msg%n</pattern>
+		</encoder>
+	</appender>
+
+    <appender name="SINGLE-FILE" class="ch.qos.logback.classic.AsyncAppender">
+            <appender name="ROLLING_FILE-${logFileName}"
+                      class="ch.qos.logback.core.rolling.RollingFileAppender">
+                <file>${log.file.folder:-/home/sviluppo/alpitour}/${logFileName}.log</file>
+                <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+                    <fileNamePattern>${log.file.folder:-/home/sviluppo/alpitour}/${logFileName}_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+                    <maxFileSize>50MB</maxFileSize>
+                    <maxHistory>30</maxHistory>
+                    <totalSizeCap>500MB</totalSizeCap>
+                </rollingPolicy>
+
+                <encoder>
+                    <pattern>${log.pattern}</pattern>
+                </encoder>
+            </appender>
+    </appender>
+
+
+
+
+	<root level="${log.level:-WARN}">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="SINGLE-FILE" />
+	</root>
+</configuration>

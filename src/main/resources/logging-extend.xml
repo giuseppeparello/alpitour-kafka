@@ -1,0 +1,5 @@
+<included>
+    <property name="log.file.name" value="kafka"/>
+    <property name="log.level" value="DEBUG"/>
+    <logger name="org.apache.kafka" level="ERROR" />
+</included>
